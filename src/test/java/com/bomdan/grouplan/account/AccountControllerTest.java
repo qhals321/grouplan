@@ -1,5 +1,8 @@
 package com.bomdan.grouplan.account;
 
+import com.bomdan.grouplan.domain.Account;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -15,10 +21,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class AccountControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
+    EntityManager em;
+
+    @AfterEach
+    void afterEach(){
+        em.clear();
+    }
 
     @Test
     @DisplayName("로그인 뷰: 로그인 화면 보여주기")
@@ -102,6 +120,42 @@ class AccountControllerTest {
     @Test
     @DisplayName("회원가입 성공")
     public void signUp_success() throws Exception{
+        ResultActions perform = signUp();
+
+        //then
+        perform.andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @DisplayName("회원가입 이후 데이터 값 확인")
+    public void signUp_dataCheck() throws Exception{
+        //given
+        String email = "bomin@naver.com";
+        String nickname = "bomin";
+        signUp();
+        //then
+
+        Account account = accountRepository.findByEmail(email).orElseThrow();
+
+        Assertions.assertThat(account.getEmail()).isEqualTo(email);
+        Assertions.assertThat(account.getNickname()).isEqualTo(nickname);
+    }
+
+    @Test
+    @DisplayName("회원가입시 패스워드 인코딩 확인")
+    public void signUp_encodingPassword() throws Exception{
+        //given
+        String email = "bomin@naver.com";
+        String password = "1234";
+        //when
+        signUp();
+        //then
+        Account account = accountRepository.findByEmail(email).orElseThrow();
+        Assertions.assertThat(account.getPassword()).isNotEqualTo(password);
+    }
+
+    private ResultActions signUp() throws Exception{
         //given
         String api = "/signUp";
 
@@ -118,15 +172,12 @@ class AccountControllerTest {
                 .build();
 
         //when
-        ResultActions perform = mockMvc.perform(post(api)
+         return mockMvc.perform(post(api)
                 .param("email", signUpForm.getEmail())
                 .param("nickname", signUpForm.getNickname())
                 .param("password1", signUpForm.getPassword1())
                 .param("password2", signUpForm.getPassword2())
                 .with(csrf())
         );
-        //then
-        perform.andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
     }
 }

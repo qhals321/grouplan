@@ -1,5 +1,7 @@
 package com.bomdan.grouplan.account;
 
+import com.sun.xml.bind.v2.TODO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 @Controller
+@RequiredArgsConstructor
 public class AccountController {
+
+    private final AccountService accountService;
 
     @InitBinder("signUpForm")
     private void initBinding(WebDataBinder webDataBinder){
@@ -29,11 +34,14 @@ public class AccountController {
         return "account/utility-create-account";
     }
 
+    //TODO 화면단에서 닉네임과 이메일 중복체크하기
     @PostMapping("/signUp")
     public String signUp(@Valid SignUpForm signUpForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "account/utility-create-account";
         }
+        accountService.signUpNewAccount(signUpForm);
+
         return "redirect:/";
     }
 }
