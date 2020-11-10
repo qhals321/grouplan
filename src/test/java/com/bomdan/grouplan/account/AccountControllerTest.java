@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,6 +36,9 @@ class AccountControllerTest {
 
     @Autowired
     EntityManager em;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @AfterEach
     void afterEach(){
@@ -153,6 +160,52 @@ class AccountControllerTest {
         //then
         Account account = accountRepository.findByEmail(email).orElseThrow();
         Assertions.assertThat(account.getPassword()).isNotEqualTo(password);
+    }
+
+    @Test
+    @DisplayName("회원가입 이후 로그인 확인")
+    public void signUp_andLogIn() throws Exception{
+        //given
+        //when
+        ResultActions resultActions = signUp();
+        //then
+        resultActions.andExpect(authenticated());
+    }
+
+    @Test
+    @DisplayName("로그인 실패")
+    public void login_fail() throws Exception{
+        //given
+        String email = "bomin@naver.com";
+        String password = "1234";
+
+        //when
+        ResultActions perform = mockMvc.perform(post("/login")
+                .param("username", email)
+                .param("password", password)
+                .with(csrf()));
+        //then
+        perform.andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated());
+    }
+
+    @Test
+    @DisplayName("로그인 성공")
+    public void login_completed() throws Exception{
+        //given
+        String email = "bomin@naver.com";
+        String password = "1234";
+        signUp();
+        SecurityContextHolder.clearContext();
+        //when
+        ResultActions perform = mockMvc.perform(post("/login")
+                .param("username", email)
+                .param("password", password)
+                .with(csrf()));
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(authenticated());
     }
 
     private ResultActions signUp() throws Exception{

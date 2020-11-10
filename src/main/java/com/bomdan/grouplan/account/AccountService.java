@@ -34,14 +34,15 @@ public class AccountService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Account findAccount = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("wrong email"));
+        return new UserAccount(findAccount);
     }
 
     private void loginAfterSignUp(Account account){
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(account, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                new UsernamePasswordAuthenticationToken(new UserAccount(account), null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(token);
     }

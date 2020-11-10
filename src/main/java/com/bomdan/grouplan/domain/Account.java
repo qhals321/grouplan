@@ -2,6 +2,7 @@ package com.bomdan.grouplan.domain;
 
 import com.bomdan.grouplan.account.SignUpForm;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

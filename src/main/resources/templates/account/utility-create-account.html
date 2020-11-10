@@ -16,7 +16,7 @@
                 <img alt="Google" src="/assets/img/logo-google.svg" class="rounded align-top mr-2" />구글 이메일 로그인
               </button>
               <hr>
-              <form method="post" action="checkedEmail.html" th:action="@{/sign-up}" th:object="${signUpForm}">
+              <form method="post" action="checkedEmail.html" th:action="@{/signUp}" th:object="${signUpForm}">
                 <div class="form-group">
                   <input class="form-control" type="email" placeholder="이메일 주소" name="create-account-email" th:field="*{email}" />
                 </div>
