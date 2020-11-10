@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="fragments.html :: head">
+  </head>
+
+  <body>
+    <div class="main-container fullscreen">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xl-5 col-lg-6 col-md-7">
+            <div class="text-center">
+              <h1 class="h2">회원가입</h1>
+              <p class="lead">서비스를 이용하고 싶다면 회원가입을 해주세요</p>
+              <button class="btn btn-lg btn-block btn-primary">
+                <img alt="Google" src="/assets/img/logo-google.svg" class="rounded align-top mr-2" />구글 이메일 로그인
+              </button>
+              <hr>
+              <form method="post" action="checkedEmail.html" th:action="@{/sign-up}" th:object="${signUpForm}">
+                <div class="form-group">
+                  <input class="form-control" type="email" placeholder="이메일 주소" name="create-account-email" th:field="*{email}" />
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="닉네임" name="create-account-nickname" th:field="*{nickname}"/>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="password" placeholder="비밀번호" name="create-account-password" th:field="*{password1}"/>
+                  <div class="text-left" th:if="${#fields.hasErrors('password1')}">
+                    <small class="form-text text-danger" th:errors="*{password1}">wrong password</small>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="password" placeholder="비밀번호 확인" name="create-account-password" th:field="*{password2}"/>
+                  <div class="text-left" th:if="${#fields.hasErrors('password2')}">
+                    <small class="form-text text-danger" th:errors="*{password2}">wrong password</small>
+                  </div>
+                </div>
+                <button class="btn btn-lg btn-block btn-primary" role="button" type="submit">
+                  회원가입
+                </button>
+                <small>이미 아이디가 있습니까? <a href="/login">로그인</a>
+                </small>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Required vendor scripts (Do not remove) -->
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/popper.min.js"></script>
+    <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+
+    <!-- Optional Vendor Scripts (Remove the plugin script here and comment initializer script out of index.js if site does not use that feature) -->
+
+    <!-- Autosize - resizes textarea inputs as user types -->
+    <script type="text/javascript" src="/assets/js/autosize.min.js"></script>
+    <!-- Flatpickr (calendar/date/time picker UI) -->
+    <script type="text/javascript" src="/assets/js/flatpickr.min.js"></script>
+    <!-- Prism - displays formatted code boxes -->
+    <script type="text/javascript" src="/assets/js/prism.js"></script>
+    <!-- Shopify Draggable - drag, drop and sort items on page -->
+    <script type="text/javascript" src="/assets/js/draggable.bundle.legacy.js"></script>
+    <script type="text/javascript" src="/assets/js/swap-animation.js"></script>
+    <!-- Dropzone - drag and drop files onto the page for uploading -->
+    <script type="text/javascript" src="/assets/js/dropzone.min.js"></script>
+    <!-- List.js - filter list elements -->
+    <script type="text/javascript" src="/assets/js/list.min.js"></script>
+
+    <!-- Required theme scripts (Do not remove) -->
+    <script type="text/javascript" src="assets/js/theme.js"></script>
+
+  </body>
+
+</html>
