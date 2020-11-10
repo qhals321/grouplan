@@ -14,10 +14,10 @@
               <p class="lead">서비스를 이용하기 위해 로그인을 해주세요</p>
               <form th:action="@{/login}" method="post">
                 <div class="form-group">
-                  <input class="form-control" type="email" placeholder="Email Address" name="username" />
+                  <input class="form-control" type="email" placeholder="이메일 주소" name="username" />
                 </div>
                 <div class="form-group">
-                  <input class="form-control" type="password" placeholder="Password" name="password" />
+                  <input class="form-control" type="password" placeholder="비밀번호" name="password" />
                   <div class="text-right">
                     <small><a href="#">패스워드가 기억이 안나요</a>
                     </small>
@@ -29,7 +29,7 @@
                 </div>
 
                 <button class="btn btn-lg btn-block btn-primary" role="button" type="submit">
-                  Log in
+                  로그인
                 </button>
                 <small>아직 계정이 없으신가요?? <a href="/sign-up">회원가입하기</a>
                 </small>
