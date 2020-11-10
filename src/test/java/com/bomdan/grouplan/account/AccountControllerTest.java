@@ -20,7 +20,7 @@ class AccountControllerTest {
     MockMvc mockMvc;
 
     @Test
-    @DisplayName("로그인: 로그인 화면 보여주기 성공")
+    @DisplayName("로그인 뷰: 로그인 화면 보여주기")
     public void loginViewAccess() throws Exception{
         //given
         String api = "/login";
@@ -30,4 +30,14 @@ class AccountControllerTest {
         perform.andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("회원가입 뷰: 회원가입 화면 보여주기 성공")
+    public void signUpViewAccess() throws Exception{
+        //given
+        String api = "/signUp";
+        //when
+        ResultActions perform = mockMvc.perform(get(api));
+        //then
+        perform.andExpect(status().isOk());
+    }
 }
