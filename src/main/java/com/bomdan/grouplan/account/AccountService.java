@@ -26,11 +26,10 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Account signUpNewAccount(SignUpForm signUpForm){
-        signUpForm.setPassword1(passwordEncoder.encode(signUpForm.getPassword1()));
-        Account savedAccount = accountRepository.save(Account.createAccount(signUpForm));
-        loginAfterSignUp(savedAccount);     //로그인 처리
-        return savedAccount;
+    public void signUpNewAccount(SignUpForm signUpForm){
+        Account savedAccount =
+                accountRepository.save(Account.createAccount(signUpForm, passwordEncoder));
+        login(savedAccount);     //로그인 처리
     }
 
     @Override
@@ -40,7 +39,7 @@ public class AccountService implements UserDetailsService {
         return new UserAccount(findAccount);
     }
 
-    private void loginAfterSignUp(Account account){
+    private void login(Account account){
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(new UserAccount(account), null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContext context = SecurityContextHolder.getContext();

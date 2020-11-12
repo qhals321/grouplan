@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,15 +28,22 @@ public class Account {
 
     private String password;
 
+    private String bio;
+
     private String emailToken;
 
 
-    public static Account createAccount(SignUpForm signUpForm){
+    public static Account createAccount(SignUpForm signUpForm, PasswordEncoder passwordEncoder){
         Account account = new Account();
         account.email = signUpForm.getEmail();
         account.nickname = signUpForm.getNickname();
-        account.password = signUpForm.getPassword1();
+        account.password = account.encodePassword(passwordEncoder, signUpForm.getPassword1());
+        account.bio = signUpForm.getBio();
         return account;
+    }
+
+    public String encodePassword(PasswordEncoder passwordEncoder, String password){
+        return passwordEncoder.encode(password);
     }
 
 

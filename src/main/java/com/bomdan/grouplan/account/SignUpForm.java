@@ -22,4 +22,6 @@ public class SignUpForm {
     private String password1;
     @NotBlank
     private String password2;
+
+    private String bio;
 }

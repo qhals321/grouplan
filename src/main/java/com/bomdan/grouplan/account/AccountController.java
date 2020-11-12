@@ -1,6 +1,7 @@
 package com.bomdan.grouplan.account;
 
-import com.sun.xml.bind.v2.TODO;
+import com.bomdan.grouplan.CurrentUser;
+import com.bomdan.grouplan.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,5 +44,11 @@ public class AccountController {
         accountService.signUpNewAccount(signUpForm);
 
         return "redirect:/";
+    }
+
+    @GetMapping("account/profile")
+    public String profileView(@CurrentUser Account account, Model model){
+        if(account!=null) model.addAttribute("account", new AccountConfigureResponseForm(account));
+        return "account/utility-account-settings";
     }
 }
