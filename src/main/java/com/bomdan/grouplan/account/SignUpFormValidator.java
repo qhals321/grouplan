@@ -1,7 +1,7 @@
 package com.bomdan.grouplan.account;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
+
+import javax.xml.validation.Validator;
 
 public class SignUpFormValidator implements Validator {
 
